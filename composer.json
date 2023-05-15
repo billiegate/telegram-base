@@ -8,6 +8,7 @@
         "php": "^8.0",
         "darkaonline/swagger-lume": "10.*",
         "guzzlehttp/guzzle": "^7.6",
+        "irazasyed/larasupport": "^1.7",
         "irazasyed/telegram-bot-sdk": "^3.11",
         "laravel/lumen-framework": "^9.0"
     },

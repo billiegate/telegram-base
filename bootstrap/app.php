@@ -98,7 +98,9 @@ collect(scandir(__DIR__ . '/../config'))->each(function ($item) use ($app) {
 */
 
 $app->register(App\Providers\AppServiceProvider::class);
+$app->register(Irazasyed\Larasupport\Providers\ArtisanServiceProvider::class);
 $app->register(\SwaggerLume\ServiceProvider::class);
+$app->register(Telegram\Bot\Laravel\TelegramServiceProvider::class);
 // $app->register(App\Providers\AuthServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
 

@@ -5,8 +5,8 @@ namespace App\Services;
 use App\Services\Contracts\IChatBotService;
 use App\Traits\ResponseTrait;
 use Illuminate\Http\Request;
-use Telegram\Bot\Api;
-
+// use Telegram\Bot\Api;
+use Telegram\Bot\Laravel\Facades\Telegram;
 class TelegramService implements IChatBotService
 {
 
@@ -21,9 +21,12 @@ class TelegramService implements IChatBotService
      *
      * @return void
      */
-    public function __construct(Api $telegram, UserService $userService)
+    public function __construct(
+        // Api $telegram, 
+        UserService $userService
+    )
     {
-        $this->telegram = $telegram;
+        // $this->telegram = $telegram;
         $this->user  = $userService;
     }
 
@@ -34,7 +37,7 @@ class TelegramService implements IChatBotService
     public function subscribe($chatId, $userId) {
 
         try {
-            $member = $this->telegram->getChatMember([
+            $member = Telegram::getChatMember([
                 'user_id' => $userId,
                 'chat_id' => $chatId
             ]);
@@ -64,7 +67,7 @@ class TelegramService implements IChatBotService
     public function subscribeToChannel(String $channelId, String $userId) {
         
         try {
-            $add = $this->telegram->addChatMember([
+            $add = Telegram::addChatMember([
                 'chat_id' => $channelId,
                 'user_id' => $userId
             ]);
@@ -84,14 +87,14 @@ class TelegramService implements IChatBotService
        
         try {
             if ( $request->chatId ) {
-                $this->telegram->sendMessage([
+                Telegram::sendMessage([
                     'chat_id'   => $request->chatId,
                     'text'      => $request->text
                 ]);
             } else {
                 $users = $this->user->getChats();
                 foreach ($users as $user) {
-                    $this->telegram->sendMessage([
+                    Telegram::sendMessage([
                         'chat_id'   => $user->chat_id,
                         'text'      => $request->text
                     ]);
@@ -111,7 +114,7 @@ class TelegramService implements IChatBotService
     public function setWebhook($url) {
         try {
             $url        = env('TELEGRAM_WEBHOOK_URL', url('/'));
-            $response   = $this->telegram->setWebhook([
+            $response   = Telegram::setWebhook([
                 'url' => $url,
                 //'allowed_updates' => ['message', 'inline_query', 'chosen_inline_result', 'callback_query'] // Dont supported in current version of irazasyed/telegram-bot-sdk 3.0
             ]);
