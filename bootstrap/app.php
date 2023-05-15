@@ -98,7 +98,7 @@ collect(scandir(__DIR__ . '/../config'))->each(function ($item) use ($app) {
 */
 
 $app->register(App\Providers\AppServiceProvider::class);
-// $app->register(\SwaggerLume\ServiceProvider::class);
+$app->register(\SwaggerLume\ServiceProvider::class);
 // $app->register(App\Providers\AuthServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
 
