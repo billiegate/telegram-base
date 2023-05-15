@@ -13,8 +13,8 @@
 |
 */
 
-$router->post('/subscribe/chatbot', 'V1\SubscribeController@subscribeToChatbot');
-$router->post('/subscribe/channel', 'V1\SubscribeController@subscribeToChannel');
-$router->post('/send/message', 'V1\MessageController@sendMessage');
-$router->post('/webhook', 'V1\WebhookController@create');
-$router->post('/notification', 'V1\WebhookController@listen');
+$router->post('/subscribe/chatbot', ['as' => 'subscribe.chat', 'uses' => 'V1\SubscribeController@subscribeToChatbot']);
+$router->post('/subscribe/channel', ['as' => 'subscribe.channel', 'uses' => 'V1\SubscribeController@subscribeToChannel']);
+$router->post('/send/message', ['as' => 'message.send', 'uses' => 'V1\MessageController@sendMessage']);
+$router->post('/webhook', ['as' => 'webhook.create', 'uses' => 'V1\WebhookController@create']);
+$router->post('/notification', ['as' => 'webhook.notify', 'uses' => 'V1\WebhookController@listen']);
