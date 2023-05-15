@@ -33,35 +33,46 @@ class TelegramService implements IChatBotService
      */
     public function subscribe($chatId, $userId) {
 
-        $member = $this->telegram->getChatMember([
-            'user_id' => $userId,
-            'chat_id' => $chatId
-        ]);
-        $user = $member["user"];
-        $firstName = isset($user['first_name']) ? $user['first_name'] : null;
-        $LastName  = isset($user['last_name']) ? $user['last_name'] : null;
-        $userName  = isset($user['username']) ? $user['username'] : null;
-       
-        $user = $this->user->persist(array(
-            'chat_id'   => $chatId,
-            'user_id'    => $userId,
-            'first_name' => $firstName,
-            'last_name'  => $LastName,
-            'user_name'  => $userName,
-        ));
-    
-        return $this->successResponse($user, "User subscribed");
+        try {
+            $member = $this->telegram->getChatMember([
+                'user_id' => $userId,
+                'chat_id' => $chatId
+            ]);
+            $user = $member["user"];
+            $firstName = isset($user['first_name']) ? $user['first_name'] : null;
+            $LastName  = isset($user['last_name']) ? $user['last_name'] : null;
+            $userName  = isset($user['username']) ? $user['username'] : null;
+        
+            $user = $this->user->persist(array(
+                'chat_id'   => $chatId,
+                'user_id'    => $userId,
+                'first_name' => $firstName,
+                'last_name'  => $LastName,
+                'user_name'  => $userName,
+            ));
+        
+            return $this->successResponse($user, "User subscribed");
+        } catch (\Exception $e) {
+            return $this->errorResponse([], $e->getMessage().', '.$e->getFile().', '.$e->getLine());
+        }
     
     }
 
     /**
      * 
      */
-    public function subscribeToChannel(Request $request) {
-        $removed = $this->telegram->addChatMember([
-            'chat_id' => $request->channelId,
-            'user_id' => $request->userId
-        ]);
+    public function subscribeToChannel(String $channelId, String $userId) {
+        
+        try {
+            $add = $this->telegram->addChatMember([
+                'chat_id' => $channelId,
+                'user_id' => $userId
+            ]);
+
+            return $this->subscribe($channelId, $userId);
+        } catch (\Exception $e) {
+            return $this->errorResponse([], $e->getMessage().', '.$e->getFile().', '.$e->getLine());
+        }
     }
 
     /**
@@ -71,28 +82,33 @@ class TelegramService implements IChatBotService
 
         // if no channel to send a message, we assume the message is intended for all users
        
-        if ( $request->chatId ) {
-            $this->telegram->sendMessage([
-                'chat_id'   => $request->chatId,
-                'text'      => $request->text
-            ]);
-        } else {
-            $users = $this->user->getChats();
-            foreach ($users as $user) {
+        try {
+            if ( $request->chatId ) {
                 $this->telegram->sendMessage([
-                    'chat_id'   => $user->chat_id,
+                    'chat_id'   => $request->chatId,
                     'text'      => $request->text
                 ]);
+            } else {
+                $users = $this->user->getChats();
+                foreach ($users as $user) {
+                    $this->telegram->sendMessage([
+                        'chat_id'   => $user->chat_id,
+                        'text'      => $request->text
+                    ]);
+                }
             }
-        }
 
-        return $this->successResponse([], "Message sent!");
+            return $this->successResponse([], "Message sent!");
+
+        } catch (\Exception $e) {
+            return $this->errorResponse([], $e->getMessage().', '.$e->getFile().', '.$e->getLine());
+        }
     }
 
     /**
      * 
      */
-    public function setWebhook(Request $request) {
+    public function setWebhook($url) {
         try {
             $url        = env('TELEGRAM_WEBHOOK_URL', url('/'));
             $response   = $this->telegram->setWebhook([

@@ -23,7 +23,9 @@ $app = new Laravel\Lumen\Application(
     dirname(__DIR__)
 );
 
-// $app->withFacades();
+$app->withFacades();
+
+$app->configure('swagger-lume');
 
 // $app->withEloquent();
 
@@ -95,7 +97,8 @@ collect(scandir(__DIR__ . '/../config'))->each(function ($item) use ($app) {
 |
 */
 
-// $app->register(App\Providers\AppServiceProvider::class);
+$app->register(App\Providers\AppServiceProvider::class);
+// $app->register(\SwaggerLume\ServiceProvider::class);
 // $app->register(App\Providers\AuthServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
 

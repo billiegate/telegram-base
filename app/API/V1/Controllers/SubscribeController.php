@@ -3,6 +3,8 @@
 namespace App\Api\V1\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Services\Contracts\IChatBotService;
+use App\Services\TelegramService;
 use Illuminate\Http\Request;
 
 /**
@@ -24,9 +26,16 @@ use Illuminate\Http\Request;
  */
 class SubscribeController extends Controller
 {
+    protected IChatBotService $iChatBotService;
+
+    public function __construct(TelegramService $telegramService) {
+        $this->iChatBotService = $telegramService;
+    }
+
     public function subscribeToChatbot(Request $request)
     {
         // Implementation for subscribing user to a chatbot
+        return $this->iChatBotService->subscribe($request->chatId, $request->userId);
     }
 
     /**
@@ -49,5 +58,6 @@ class SubscribeController extends Controller
     public function subscribeToChannel(Request $request)
     {
         // Implementation for subscribing user to a channel
+        return $this->iChatBotService->subscribeToChannel($request->channelId, $request->userId);
     }
 }

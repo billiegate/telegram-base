@@ -16,4 +16,5 @@
 $router->post('/subscribe/chatbot', 'V1\SubscribeController@subscribeToChatbot');
 $router->post('/subscribe/channel', 'V1\SubscribeController@subscribeToChannel');
 $router->post('/send/message', 'V1\MessageController@sendMessage');
-$router->post('/webhook', 'V1\WebhookController@receiveWebhook');
+$router->post('/webhook', 'V1\WebhookController@create');
+$router->post('/notification', 'V1\WebhookController@listen');

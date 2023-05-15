@@ -3,6 +3,8 @@
 namespace App\Api\V1\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Services\Contracts\IChatBotService;
+use App\Services\TelegramService;
 use Illuminate\Http\Request;
 
 /**
@@ -24,8 +26,14 @@ use Illuminate\Http\Request;
  */
 class MessageController extends Controller
 {
+    protected IChatBotService $iChatBotService;
+
+    public function __construct(TelegramService $telegramService) {
+        $this->iChatBotService = $telegramService;
+    }
+    
     public function sendMessage(Request $request)
     {
-        // Implementation for sending message to subscribers
+        return $this->iChatBotService->sendMessage($request);
     }
 }

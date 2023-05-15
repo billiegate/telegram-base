@@ -14,7 +14,7 @@ interface IChatBotService
     /**
      * 
      */
-    public function subscribeToChannel(Request $request);
+    public function subscribeToChannel(String $channelId, String $userId);
 
     /**
      * 
@@ -25,4 +25,10 @@ interface IChatBotService
      * 
      */
     public function webhook(Request $request);
+
+    /**
+     * 
+     */
+    public function setWebhook(String $url);
+    
 }
