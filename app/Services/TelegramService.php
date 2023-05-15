@@ -133,6 +133,9 @@ class TelegramService implements IChatBotService
      * 
      */
     public function webhook(Request $request) {
+
+        $params = $this->telegram->getWebhookUpdate();
+        
         if (isset($params['message']['left_chat_member']))
             exit();
 
