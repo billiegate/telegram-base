@@ -26,7 +26,7 @@ class TelegramService implements IChatBotService
         UserService $userService
     )
     {
-        // $this->telegram = $telegram;
+        $this->telegram = Telegram::bot('common');
         $this->user  = $userService;
     }
 
@@ -37,7 +37,7 @@ class TelegramService implements IChatBotService
     public function subscribe($chatId, $userId) {
 
         try {
-            $member = Telegram::getChatMember([
+            $member = $this->telegram->getChatMember([
                 'user_id' => $userId,
                 'chat_id' => $chatId
             ]);
@@ -67,7 +67,7 @@ class TelegramService implements IChatBotService
     public function subscribeToChannel(String $channelId, String $userId) {
         
         try {
-            $add = Telegram::addChatMember([
+            $add = $this->telegram->addChatMember([
                 'chat_id' => $channelId,
                 'user_id' => $userId
             ]);
@@ -87,14 +87,14 @@ class TelegramService implements IChatBotService
        
         try {
             if ( $request->chatId ) {
-                Telegram::sendMessage([
+                $this->telegram->sendMessage([
                     'chat_id'   => $request->chatId,
                     'text'      => $request->text
                 ]);
             } else {
                 $users = $this->user->getChats();
                 foreach ($users as $user) {
-                    Telegram::sendMessage([
+                    $this->telegram->sendMessage([
                         'chat_id'   => $user->chat_id,
                         'text'      => $request->text
                     ]);
@@ -114,7 +114,7 @@ class TelegramService implements IChatBotService
     public function setWebhook($url) {
         try {
             $url        = env('TELEGRAM_WEBHOOK_URL', url('/'));
-            $response   = Telegram::setWebhook([
+            $response   = $this->telegram->setWebhook([
                 'url' => $url,
                 //'allowed_updates' => ['message', 'inline_query', 'chosen_inline_result', 'callback_query'] // Dont supported in current version of irazasyed/telegram-bot-sdk 3.0
             ]);
