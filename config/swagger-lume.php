@@ -7,7 +7,7 @@ return [
         | Edit to set the api's title
         |--------------------------------------------------------------------------
          */
-        'title' => 'Telegram Bot',
+        'title' => 'Swagger Lume API',
     ],
 
     'routes' => [
